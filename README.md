@@ -746,8 +746,8 @@ Se usa `LocalDate` (sin hora):
 | **GetProductPriceHistoryUseCase** | Caso de uso: historial                       | `application/usecases/`               |
 | **ProductController**             | REST endpoints                               | `infrastructure/controllers/`         |
 | **ProductDtoMapper**              | DTO conversions                              | `application/mappers/`                |
-| **ProductMapper**                 | JPA ↔ Domain                                 | `infrastructure/persistence/mappers/` |
-| **PriceMapper**                   | JPA ↔ Domain                                 | `infrastructure/persistence/mappers/` |
+| **ProductMapper**                 | JPA ↔ Domain                                 | `infrastructure/persistence/product/` |
+| **PriceMapper**                   | JPA ↔ Domain                                 | `infrastructure/persistence/product/` |
 
 ### Métricas de Código
 
