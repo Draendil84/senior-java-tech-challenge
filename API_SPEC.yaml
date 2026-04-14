@@ -1,0 +1,201 @@
+openapi: 3.0.0
+info:
+  title: Products API
+  description: API para gestionar productos con histórico de precios
+  version: 1.0.0
+  contact:
+    name: Mango Tech
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor de desarrollo
+
+paths:
+  /products:
+    post:
+      summary: Crear un nuevo producto
+      operationId: createProduct
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        201:
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        400:
+          description: Datos inválidos
+
+  /products/{id}/prices:
+    post:
+      summary: Agregar un precio a un producto
+      operationId: addPrice
+      tags:
+        - Prices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePriceRequest'
+      responses:
+        200:
+          description: Precio agregado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductWithPricesResponse'
+        400:
+          description: Datos inválidos o solapamiento de fechas
+        404:
+          description: Producto no encontrado
+        409:
+          description: Conflicto - Solapamiento de fechas de precios
+
+    get:
+      summary: Obtener historial de precios o precio en fecha específica
+      description: "Endpoint dual que devuelve historial completo sin parametro date, o precio en fecha especifica si se proporciona. Idealmente separados en dos endpoints, pero consolidados para mantener compatibilidad con pruebas automatizadas."
+      operationId: getPrice
+      tags:
+        - Prices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del producto
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: "Fecha para obtener el precio vigente (YYYY-MM-DD). Si se omite devuelve historial completo. Si esta presente devuelve el precio en esa fecha."
+      responses:
+        200:
+          description: "Respuesta exitosa. ProductWithPricesResponse si sin date (historial), o CurrentPriceResponse si con date (precio en fecha)."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ProductWithPricesResponse'
+                  - $ref: '#/components/schemas/CurrentPriceResponse'
+        400:
+          description: "Parametro date en formato invalido"
+        404:
+          description: "Producto no encontrado o sin precio en esa fecha"
+
+components:
+  schemas:
+    CreateProductRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Zapatillas deportivas
+        description:
+          type: string
+          example: Modelo 2025 edición limitada
+
+    ProductResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Zapatillas deportivas
+        description:
+          type: string
+          example: Modelo 2025 edición limitada
+
+    CreatePriceRequest:
+      type: object
+      required:
+        - value
+        - initDate
+      properties:
+        value:
+          type: number
+          format: decimal
+          example: 99.99
+        initDate:
+          type: string
+          format: date
+          example: "2024-01-01"
+        endDate:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-06-30"
+
+    PriceResponse:
+      type: object
+      properties:
+        value:
+          type: number
+          format: decimal
+          example: 99.99
+        initDate:
+          type: string
+          format: date
+          example: "2024-01-01"
+        endDate:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-06-30"
+
+    CurrentPriceResponse:
+      type: object
+      properties:
+        value:
+          type: number
+          format: decimal
+          example: 99.99
+
+    ProductWithPricesResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Zapatillas deportivas
+        description:
+          type: string
+          example: Modelo 2025 edición limitada
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceResponse'
+
+tags:
+  - name: Products
+    description: Operaciones relacionadas con productos
+  - name: Prices
+    description: Operaciones relacionadas con precios
+

@@ -1,0 +1,91 @@
+# Build and Gradle
+build/
+.gradle/
+*.gradle.bak
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+*.ids
+*.orig
+*.classpath
+*.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IDE - Eclipse
+.project
+.cproject
+.classpath
+.c9/
+
+# IDE - Others
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.log
+
+# H2 Database
+*.h2.db
+*.mv.db
+*.trace.db
+*.db
+data/
+
+# OS
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Node (if used)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Generated files
+bin/
+out/
+generated/
+
+# Checkstyle
+checkstyle-result.xml
+
+# Jacoco
+jacoco.exec
