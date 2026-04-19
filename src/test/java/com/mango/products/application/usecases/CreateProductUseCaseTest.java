@@ -1,8 +1,8 @@
 package com.mango.products.application.usecases;
 
-import com.mango.products.domain.Product;
 import com.mango.products.domain.exceptions.DuplicateProductNameException;
 import com.mango.products.domain.exceptions.InvalidProductException;
+import com.mango.products.domain.model.Product;
 import com.mango.products.domain.ports.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,5 +70,5 @@ class CreateProductUseCaseTest {
         assertThrows(DuplicateProductNameException.class, () ->
                 createProductUseCase.createProduct("Zapatillas deportivas", "Nueva descripción"));
     }
-    
+
 }

@@ -1,43 +1,64 @@
 package com.mango.products.infrastructure.persistence.product;
 
-import com.mango.products.domain.Price;
-import com.mango.products.domain.PriceRange;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
-import java.time.LocalDate;
+import com.mango.products.domain.model.Price;
+import org.springframework.stereotype.Component;
 
 /**
- * Mapper to convert between PriceEntity (JPA) and Price (Domain).
+ * Converter between PriceEntity (Persistence) and Price (Domain).
  */
-@Mapper(componentModel = "spring")
-public abstract class PriceMapper {
+@Component
+public class PriceMapper {
 
-    @Mapping(target = "range", expression = "java(mapToRange(entity))")
-    public abstract Price toDomain(PriceEntity entity);
-
-    @Mapping(target = "initDate", expression = "java(mapInitDate(price))")
-    @Mapping(target = "endDate", expression = "java(mapEndDate(price))")
-    @Mapping(target = "product", ignore = true)
-    public abstract PriceEntity fromDomain(Price price);
-
-    protected PriceRange mapToRange(PriceEntity entity) {
+    /**
+     * Converts a persistence entity to a domain entity.
+     *
+     * @param entity persistence entity from database
+     * @return domain price
+     */
+    public Price toDomain(PriceEntity entity) {
         if (entity == null) {
             return null;
         }
-        return new PriceRange(entity.getInitDate(), entity.getEndDate());
+        return new Price(entity.getId(), entity.getValue(), entity.getInitDate(), entity.getEndDate());
     }
 
-    protected LocalDate mapInitDate(Price price) {
-        return price != null && price.getRange() != null
-                ? price.getRange().getInitDate()
-                : null;
+    /**
+     * Converts a domain entity to a persistence entity.
+     *
+     * @param price   domain price
+     * @param product the associated product entity
+     * @return persistence entity ready to persist
+     */
+    public PriceEntity fromDomain(Price price, ProductEntity product) {
+        if (price == null) {
+            return null;
+        }
+        PriceEntity entity = new PriceEntity(
+                price.getId(),
+                price.getValue(),
+                price.getInitDate(),
+                price.getEndDate()
+        );
+        entity.setProduct(product);
+        return entity;
     }
 
-    protected LocalDate mapEndDate(Price price) {
-        return price != null && price.getRange() != null
-                ? price.getRange().getEndDate()
-                : null;
+    /**
+     * Converts a domain entity to a persistence entity without product association.
+     *
+     * @param price domain price
+     * @return persistence entity ready to persist
+     */
+    public PriceEntity fromDomain(Price price) {
+        if (price == null) {
+            return null;
+        }
+        return new PriceEntity(
+                price.getId(),
+                price.getValue(),
+                price.getInitDate(),
+                price.getEndDate()
+        );
     }
 
 }

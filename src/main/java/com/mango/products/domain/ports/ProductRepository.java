@@ -1,6 +1,6 @@
 package com.mango.products.domain.ports;
 
-import com.mango.products.domain.Product;
+import com.mango.products.domain.model.Product;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,5 +47,5 @@ public interface ProductRepository {
      * @return list with all products
      */
     List<Product> findAll();
-    
+
 }

@@ -1,38 +1,38 @@
 package com.mango.products.application.usecases;
 
-import com.mango.products.domain.Product;
 import com.mango.products.domain.exceptions.DuplicateProductNameException;
 import com.mango.products.domain.exceptions.InvalidProductException;
+import com.mango.products.domain.model.Product;
 import com.mango.products.domain.ports.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 
 /**
  * Use case for creating a new product.
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreateProductUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(CreateProductUseCase.class);
 
     private final ProductRepository productRepository;
 
     /**
      * Creates a new product with the given name and description.
-     * Validates the input parameters and checks for duplicate product names before saving the product to the repository.
+     * Validates that the product name is unique before saving to the repository.
      *
      * @param name        name of the product
      * @param description description of the product
      * @return product created
+     * @throws DuplicateProductNameException if a product with this name already exists
+     * @throws InvalidProductException       if domain invariants are violated (name validation, etc)
      */
     public Product createProduct(String name, String description) {
         log.debug("Starting product creation with name: '{}', description: '{}'", name, description);
-
-        if (name == null || name.isBlank()) {
-            log.error("Invalid product name: name is null or blank");
-            throw new InvalidProductException("The product name cannot be empty");
-        }
 
         if (productRepository.findByName(name).isPresent()) {
             log.warn("Duplicate product name detected: '{}'", name);

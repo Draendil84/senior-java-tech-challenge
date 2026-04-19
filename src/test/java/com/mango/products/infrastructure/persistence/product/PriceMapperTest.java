@@ -1,9 +1,7 @@
 package com.mango.products.infrastructure.persistence.product;
 
-import com.mango.products.domain.Price;
-import com.mango.products.domain.PriceRange;
+import com.mango.products.domain.model.Price;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,15 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class PriceMapperTest {
 
-    private final PriceMapper mapper = Mappers.getMapper(PriceMapper.class);
+    private final PriceMapper mapper = new PriceMapper();
 
     @Test
     void shouldMapEntityToDomain() {
-        PriceEntity entity = new PriceEntity();
-        entity.setId(1L);
-        entity.setValue(BigDecimal.TEN);
-        entity.setInitDate(LocalDate.of(2024, 1, 1));
-        entity.setEndDate(LocalDate.of(2024, 6, 1));
+        PriceEntity entity = new PriceEntity(1L, BigDecimal.TEN, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 6, 1));
 
         Price result = mapper.toDomain(entity);
 
@@ -39,13 +33,7 @@ class PriceMapperTest {
 
     @Test
     void shouldMapDomainToEntity() {
-        Price price = new Price();
-        price.setId(1L);
-        price.setValue(BigDecimal.TEN);
-        price.setRange(new PriceRange(
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 6, 1)
-        ));
+        Price price = new Price(1L, BigDecimal.TEN, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 6, 1));
 
         PriceEntity result = mapper.fromDomain(price);
 
@@ -54,16 +42,15 @@ class PriceMapperTest {
     }
 
     @Test
-    void shouldHandleNullRange() {
-        Price price = new Price();
-        price.setValue(BigDecimal.TEN);
-        price.setRange(null);
+    void shouldMapDomainToEntityWithProduct() {
+        Price price = new Price(1L, BigDecimal.TEN, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 6, 1));
+        ProductEntity product = new ProductEntity(1L, "Test", "Description");
 
-        PriceEntity result = mapper.fromDomain(price);
+        PriceEntity result = mapper.fromDomain(price, product);
 
         assertNotNull(result);
-        assertNull(result.getInitDate());
-        assertNull(result.getEndDate());
+        assertEquals(BigDecimal.TEN, result.getValue());
+        assertEquals(product, result.getProduct());
     }
 
     @Test

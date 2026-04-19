@@ -8,15 +8,9 @@ spring:
     username: sa
     password:
 
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 
   cache:
     type: simple

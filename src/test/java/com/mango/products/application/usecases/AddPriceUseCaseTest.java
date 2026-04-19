@@ -1,8 +1,8 @@
 package com.mango.products.application.usecases;
 
-import com.mango.products.domain.Product;
 import com.mango.products.domain.exceptions.InvalidPriceException;
 import com.mango.products.domain.exceptions.ProductNotFoundException;
+import com.mango.products.domain.model.Product;
 import com.mango.products.domain.ports.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -87,8 +87,9 @@ class AddPriceUseCaseTest {
         BigDecimal price = BigDecimal.valueOf(99.99);
         LocalDate end = LocalDate.of(2024, 6, 30);
 
+        // Domain validates date range BEFORE use case even checks if product exists
         assertThrows(InvalidPriceException.class,
                 () -> addPriceUseCase.addPrice(productId, price, null, end));
     }
-    
+
 }

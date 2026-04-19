@@ -1,39 +1,66 @@
 package com.mango.products.infrastructure.persistence.product;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
 /**
- * JPA entity for price persistence in H2.
+ * Entity for price persistence.
  */
-@Entity
-@Table(name = "prices")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class PriceEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, name = "price_value", precision = 19, scale = 2)
     private BigDecimal value;
-
-    @Column(nullable = false, name = "init_date")
     private LocalDate initDate;
-
-    @Column(name = "end_date")
     private LocalDate endDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 
+    public PriceEntity() {
+    }
+
+    public PriceEntity(Long id, BigDecimal value, LocalDate initDate, LocalDate endDate) {
+        this.id = id;
+        this.value = value;
+        this.initDate = initDate;
+        this.endDate = endDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public LocalDate getInitDate() {
+        return initDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public ProductEntity getProduct() {
+        return product;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public void setInitDate(LocalDate initDate) {
+        this.initDate = initDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setProduct(ProductEntity product) {
+        this.product = product;
+    }
 }

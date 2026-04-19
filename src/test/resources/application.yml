@@ -3,25 +3,22 @@ spring:
     name: products-api-test
 
   datasource:
-    url: jdbc:h2:mem:test;MODE=MySQL
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password:
+    hikari:
+      initialization-fail-timeout: 0
 
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc:
-          batch_size: 20
-          fetch_size: 50
   sql:
     init:
-      mode: always
+      mode: never
+
+  cache:
+    type: none
+
+  jpa:
+    defer-datasource-initialization: true
 
 server:
   port: 8080

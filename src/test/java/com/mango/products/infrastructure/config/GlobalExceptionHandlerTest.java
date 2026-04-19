@@ -38,8 +38,11 @@ class GlobalExceptionHandlerTest {
         assertEquals(400, response.getStatusCode().value());
         assertNotNull(response.getBody());
         assertEquals("VALIDATION_ERROR", response.getBody().getCode());
-        assertEquals(2, response.getBody().getDetails().size());
+        assertEquals(4, response.getBody().getDetails().size());
         assertEquals("must not be null", response.getBody().getDetails().get("name"));
+        assertEquals("must be positive", response.getBody().getDetails().get("price"));
+        assertTrue(response.getBody().getDetails().containsKey("reason"));
+        assertTrue(response.getBody().getDetails().containsKey("action"));
     }
 
     @Test
@@ -56,7 +59,10 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(400, response.getStatusCode().value());
         assertNotNull(response.getBody());
-        assertTrue(response.getBody().getDetails().isEmpty());
+        // Details should have at least reason and action, even without field errors
+        assertTrue(response.getBody().getDetails().size() >= 2);
+        assertTrue(response.getBody().getDetails().containsKey("reason"));
+        assertTrue(response.getBody().getDetails().containsKey("action"));
     }
 
     @Test

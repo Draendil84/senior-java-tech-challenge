@@ -718,15 +718,10 @@ Se usa `LocalDate` (sin hora):
 - Sin concerns de timezone
 - Adecuado para "precios vigentes en una fecha"
 
----
+### 9. Manejo Explícito de Errores - GlobalExceptionHandler
 
-## 📦 Entrega
+El `GlobalExceptionHandler` implementa **estrategia de error explícito e introspectable**:
 
-- ✅ Código fuente completamente implementado
-- ✅ Tests unitarios e integración
-- ✅ README detallado con decisiones técnicas
-- ✅ Fácil de compilar y ejecutar
-- ✅ Arquitectura escalable y mantenible
 
 ---
 
