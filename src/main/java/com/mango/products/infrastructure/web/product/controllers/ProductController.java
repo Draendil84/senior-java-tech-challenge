@@ -25,10 +25,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * REST controller for product and price management.
- * <p>
- * All endpoints document their possible errors with @ApiResponse annotations.
- * Error responses include an errorId (UUID) for tracing and support reference.
- * See ERROR_REFERENCE.md for details on all possible error codes and meanings.
  */
 @RestController
 @RequestMapping("/products")
