@@ -3,7 +3,7 @@ package com.mango.products.application.usecases;
 import com.mango.products.domain.exceptions.DuplicateProductNameException;
 import com.mango.products.domain.exceptions.InvalidProductException;
 import com.mango.products.domain.model.Product;
-import com.mango.products.domain.ports.ProductRepository;
+import com.mango.products.domain.ports.ProductRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 class CreateProductUseCaseTest {
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductRepositoryPort productRepositoryPort;
 
     @InjectMocks
     private CreateProductUseCase createProductUseCase;
@@ -31,8 +31,8 @@ class CreateProductUseCaseTest {
     @Test
     void testCreateProductSuccessfully() {
         Product mockProduct = new Product(1L, "Zapatillas deportivas", "Descripción");
-        when(productRepository.findByName("Zapatillas deportivas")).thenReturn(Optional.empty());
-        when(productRepository.save(any(Product.class))).thenReturn(mockProduct);
+        when(productRepositoryPort.findByName("Zapatillas deportivas")).thenReturn(Optional.empty());
+        when(productRepositoryPort.save(any(Product.class))).thenReturn(mockProduct);
 
         Product result = createProductUseCase.createProduct("Zapatillas deportivas", "Descripción");
 
@@ -64,7 +64,7 @@ class CreateProductUseCaseTest {
         // Simular que el producto ya existe en el repositorio
         Product existingProduct = new Product(1L, "Zapatillas deportivas", "Descripción existente");
 
-        when(productRepository.findByName("Zapatillas deportivas"))
+        when(productRepositoryPort.findByName("Zapatillas deportivas"))
                 .thenReturn(Optional.of(existingProduct));
 
         assertThrows(DuplicateProductNameException.class, () ->

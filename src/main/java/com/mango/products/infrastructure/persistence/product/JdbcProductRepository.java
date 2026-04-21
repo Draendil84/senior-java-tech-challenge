@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,38 +20,34 @@ import java.util.Optional;
  */
 @Repository
 @RequiredArgsConstructor
+@Transactional
 public class JdbcProductRepository {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcProductRepository.class);
 
-    private final JdbcTemplate jdbcTemplate;
-
-    private static final String INSERT_PRODUCT =
-            "INSERT INTO products (name, description) VALUES (?, ?)";
+    private static final String INSERT_PRODUCT = "INSERT INTO products (name, description) VALUES (?, ?)";
 
     private static final String INSERT_PRICE =
             "INSERT INTO prices (product_id, price_value, init_date, end_date) VALUES (?, ?, ?, ?)";
 
-    private static final String SELECT_PRODUCT_BY_ID =
-            "SELECT id, name, description FROM products WHERE id = ?";
+    private static final String SELECT_PRODUCT_BY_ID = "SELECT * FROM products WHERE id = ?";
 
-    private static final String SELECT_PRODUCT_BY_NAME =
-            "SELECT id, name, description FROM products WHERE name = ?";
+    private static final String SELECT_PRODUCT_BY_NAME = "SELECT * FROM products WHERE name = ?";
 
-    private static final String SELECT_ALL_PRODUCTS =
-            "SELECT id, name, description FROM products";
+    private static final String SELECT_ALL_PRODUCTS = "SELECT * FROM products";
 
     private static final String SELECT_PRICES_BY_PRODUCT =
-            "SELECT id, product_id, price_value, init_date, end_date FROM prices WHERE product_id = ? ORDER BY init_date ASC";
+            "SELECT * FROM prices WHERE product_id = ? ORDER BY init_date ASC";
 
-    private static final String DELETE_PRODUCT =
-            "DELETE FROM products WHERE id = ?";
+    private static final String DELETE_PRODUCT = "DELETE FROM products WHERE id = ?";
 
-    private static final String DELETE_PRICES_BY_PRODUCT =
-            "DELETE FROM prices WHERE product_id = ?";
+    private static final String DELETE_PRICES_BY_PRODUCT = "DELETE FROM prices WHERE product_id = ?";
 
-    private static final String UPDATE_PRODUCT =
-            "UPDATE products SET name = ?, description = ? WHERE id = ?";
+    private static final String UPDATE_PRODUCT = "UPDATE products SET name = ?, description = ? WHERE id = ?";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<PriceEntity> priceRowMapper = (rs, rowNum) -> mapPriceRow(rs);
 
     /**
      * Saves a product with its prices to the database.
@@ -140,6 +137,7 @@ public class JdbcProductRepository {
      * @param id the product ID
      * @return Optional containing the product if found
      */
+    @Transactional(readOnly = true)
     public Optional<ProductEntity> findById(Long id) {
         log.debug("Searching for product by ID: {}", id);
 
@@ -159,6 +157,7 @@ public class JdbcProductRepository {
      * @param name the product name
      * @return Optional containing the product if found
      */
+    @Transactional(readOnly = true)
     public Optional<ProductEntity> findByName(String name) {
         log.debug("Searching product by name: '{}'", name);
 
@@ -177,6 +176,7 @@ public class JdbcProductRepository {
      *
      * @return list of all products
      */
+    @Transactional(readOnly = true)
     public List<ProductEntity> findAll() {
         log.debug("Obtaining all the products");
 
@@ -221,11 +221,11 @@ public class JdbcProductRepository {
      * Loads prices for a specific product.
      */
     private List<PriceEntity> loadPricesByProductId(Long productId) {
-        return Collections.singletonList(jdbcTemplate.query(
+        return jdbcTemplate.query(
                 SELECT_PRICES_BY_PRODUCT,
-                this::mapPriceRow,
+                priceRowMapper,
                 productId
-        ));
+        );
     }
 
     /**
@@ -261,8 +261,3 @@ public class JdbcProductRepository {
     }
 
 }
-
-
-
-
-

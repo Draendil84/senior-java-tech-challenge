@@ -15,7 +15,7 @@ public class PriceMapper {
      * @param entity persistence entity from database
      * @return domain price
      */
-    public Price toDomain(PriceEntity entity) {
+    public Price toPrice(PriceEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -29,7 +29,7 @@ public class PriceMapper {
      * @param product the associated product entity
      * @return persistence entity ready to persist
      */
-    public PriceEntity fromDomain(Price price, ProductEntity product) {
+    public PriceEntity toPriceEntity(Price price, ProductEntity product) {
         if (price == null) {
             return null;
         }
@@ -49,7 +49,7 @@ public class PriceMapper {
      * @param price domain price
      * @return persistence entity ready to persist
      */
-    public PriceEntity fromDomain(Price price) {
+    public PriceEntity toPriceEntity(Price price) {
         if (price == null) {
             return null;
         }

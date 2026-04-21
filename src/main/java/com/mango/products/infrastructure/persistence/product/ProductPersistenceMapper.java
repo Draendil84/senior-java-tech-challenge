@@ -24,14 +24,14 @@ public class ProductPersistenceMapper {
      * @param entity JPA entity retrieved from database
      * @return domain product
      */
-    public Product toDomain(ProductEntity entity) {
+    public Product toProduct(ProductEntity entity) {
         if (entity == null) {
             return null;
         }
         Product product = new Product(entity.getId(), entity.getName(), entity.getDescription());
         if (entity.getPrices() != null) {
             List<Price> prices = entity.getPrices().stream()
-                    .map(priceMapper::toDomain)
+                    .map(priceMapper::toPrice)
                     .toList();
             prices.forEach(product::addPrice);
         }
@@ -44,14 +44,14 @@ public class ProductPersistenceMapper {
      * @param product domain product
      * @return persistence entity ready to persist
      */
-    public ProductEntity fromDomain(Product product) {
+    public ProductEntity toProductEntity(Product product) {
         if (product == null) {
             return null;
         }
         ProductEntity entity = new ProductEntity(product.getId(), product.getName(), product.getDescription());
         if (product.getPrices() != null && !product.getPrices().isEmpty()) {
             List<PriceEntity> priceEntities = product.getPrices().stream()
-                    .map(price -> priceMapper.fromDomain(price, entity))
+                    .map(price -> priceMapper.toPriceEntity(price, entity))
                     .toList();
             entity.setPrices(priceEntities);
         }

@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Interface that defines persistence operations for products.
  */
-public interface ProductRepository {
+public interface ProductRepositoryPort {
 
     /**
      * Save a product to the repository.

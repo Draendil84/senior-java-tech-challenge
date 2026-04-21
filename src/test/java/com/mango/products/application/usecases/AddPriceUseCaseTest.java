@@ -3,7 +3,7 @@ package com.mango.products.application.usecases;
 import com.mango.products.domain.exceptions.InvalidPriceException;
 import com.mango.products.domain.exceptions.ProductNotFoundException;
 import com.mango.products.domain.model.Product;
-import com.mango.products.domain.ports.ProductRepository;
+import com.mango.products.domain.ports.ProductRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class AddPriceUseCaseTest {
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductRepositoryPort productRepositoryPort;
 
     @InjectMocks
     private AddPriceUseCase addPriceUseCase;
@@ -33,8 +33,8 @@ class AddPriceUseCaseTest {
     @Test
     void testAddPriceSuccessfully() {
         Product product = new Product(1L, "Zapatillas", "Descripción");
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(productRepositoryPort.findById(1L)).thenReturn(Optional.of(product));
+        when(productRepositoryPort.save(any(Product.class))).thenReturn(product);
 
         Product result = addPriceUseCase.addPrice(
                 1L,
@@ -54,7 +54,7 @@ class AddPriceUseCaseTest {
         LocalDate start = LocalDate.of(2024, 1, 1);
         LocalDate end = LocalDate.of(2024, 6, 30);
 
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+        when(productRepositoryPort.findById(productId)).thenReturn(Optional.empty());
 
         assertThrows(ProductNotFoundException.class,
                 () -> addPriceUseCase.addPrice(productId, price, start, end));

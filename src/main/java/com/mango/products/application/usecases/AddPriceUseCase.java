@@ -4,7 +4,7 @@ import com.mango.products.domain.exceptions.InvalidPriceException;
 import com.mango.products.domain.exceptions.ProductNotFoundException;
 import com.mango.products.domain.model.Price;
 import com.mango.products.domain.model.Product;
-import com.mango.products.domain.ports.ProductRepository;
+import com.mango.products.domain.ports.ProductRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class AddPriceUseCase {
 
-    private final ProductRepository productRepository;
+    private final ProductRepositoryPort productRepositoryPort;
 
     private static final Logger log = LoggerFactory.getLogger(AddPriceUseCase.class);
 
@@ -41,12 +41,12 @@ public class AddPriceUseCase {
 
         Price price = new Price(value, initDate, endDate);
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepositoryPort.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
 
         product.addPrice(price);
 
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = productRepositoryPort.save(product);
         log.info("Product with ID: {} updated successfully with new price", productId);
 
         return savedProduct;

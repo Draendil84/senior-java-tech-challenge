@@ -20,9 +20,9 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final String REASON = "reason";
     private static final String ACTION = "action";
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * Standard error response.
@@ -69,8 +69,7 @@ public class GlobalExceptionHandler {
         );
 
         ex.getBindingResult().getFieldErrors().forEach(error ->
-                response.details.put(error.getField(), error.getDefaultMessage())
-        );
+                response.details.put(error.getField(), error.getDefaultMessage()));
 
         response.details.put(REASON, "One or more request fields failed validation");
         response.details.put(ACTION, "Review the validation errors and resend the request with valid data");

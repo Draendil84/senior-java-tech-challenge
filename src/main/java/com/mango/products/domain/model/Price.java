@@ -7,11 +7,6 @@ import java.time.LocalDate;
 
 /**
  * Domain entity representing a Price.
- * <p>
- * This entity encapsulates business logic for price management including:
- * - Price value validation
- * - Temporal range management through PriceRange
- * - Price queries and temporal operations
  */
 public class Price {
     private final Long id;

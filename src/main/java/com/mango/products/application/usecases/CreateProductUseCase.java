@@ -3,7 +3,7 @@ package com.mango.products.application.usecases;
 import com.mango.products.domain.exceptions.DuplicateProductNameException;
 import com.mango.products.domain.exceptions.InvalidProductException;
 import com.mango.products.domain.model.Product;
-import com.mango.products.domain.ports.ProductRepository;
+import com.mango.products.domain.ports.ProductRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class CreateProductUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(CreateProductUseCase.class);
 
-    private final ProductRepository productRepository;
+    private final ProductRepositoryPort productRepositoryPort;
 
     /**
      * Creates a new product with the given name and description.
@@ -34,14 +34,14 @@ public class CreateProductUseCase {
     public Product createProduct(String name, String description) {
         log.debug("Starting product creation with name: '{}', description: '{}'", name, description);
 
-        if (productRepository.findByName(name).isPresent()) {
+        if (productRepositoryPort.findByName(name).isPresent()) {
             log.warn("Duplicate product name detected: '{}'", name);
             throw new DuplicateProductNameException(name);
         }
 
         log.info("Creating new product with name: '{}'", name);
         Product product = new Product(name, description);
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = productRepositoryPort.save(product);
         log.info("Product saved successfully with ID: {}", savedProduct.getId());
 
         return savedProduct;

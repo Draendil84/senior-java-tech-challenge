@@ -16,10 +16,10 @@ class PriceMapperTest {
     private final PriceMapper mapper = new PriceMapper();
 
     @Test
-    void shouldMapEntityToDomain() {
+    void shouldMapEntityToPrice() {
         PriceEntity entity = new PriceEntity(1L, BigDecimal.TEN, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 6, 1));
 
-        Price result = mapper.toDomain(entity);
+        Price result = mapper.toPrice(entity);
 
         assertNotNull(result);
         assertEquals(BigDecimal.TEN, result.getValue());
@@ -28,14 +28,14 @@ class PriceMapperTest {
 
     @Test
     void shouldReturnNullWhenEntityIsNull() {
-        assertNull(mapper.toDomain(null));
+        assertNull(mapper.toPrice(null));
     }
 
     @Test
     void shouldMapDomainToEntity() {
         Price price = new Price(1L, BigDecimal.TEN, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 6, 1));
 
-        PriceEntity result = mapper.fromDomain(price);
+        PriceEntity result = mapper.toPriceEntity(price);
 
         assertNotNull(result);
         assertEquals(BigDecimal.TEN, result.getValue());
@@ -46,7 +46,7 @@ class PriceMapperTest {
         Price price = new Price(1L, BigDecimal.TEN, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 6, 1));
         ProductEntity product = new ProductEntity(1L, "Test", "Description");
 
-        PriceEntity result = mapper.fromDomain(price, product);
+        PriceEntity result = mapper.toPriceEntity(price, product);
 
         assertNotNull(result);
         assertEquals(BigDecimal.TEN, result.getValue());
@@ -55,7 +55,7 @@ class PriceMapperTest {
 
     @Test
     void shouldReturnNullWhenPriceIsNull() {
-        assertNull(mapper.fromDomain(null));
+        assertNull(mapper.toPriceEntity(null));
     }
 
 }

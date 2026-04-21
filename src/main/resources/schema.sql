@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS products (
     description VARCHAR(1000)
 );
 
+CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);
+
 -- Crear tabla de precios
 CREATE TABLE IF NOT EXISTS prices (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -16,6 +18,4 @@ CREATE TABLE IF NOT EXISTS prices (
     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 
--- Crear índices para mejor rendimiento
-CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);
 CREATE INDEX IF NOT EXISTS idx_prices_product_id ON prices(product_id);

@@ -2,7 +2,7 @@ package com.mango.products.infrastructure.persistence.product;
 
 import com.mango.products.domain.exceptions.DuplicateProductNameException;
 import com.mango.products.domain.model.Product;
-import com.mango.products.domain.ports.ProductRepository;
+import com.mango.products.domain.ports.ProductRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,11 @@ import java.util.Optional;
  */
 @Component
 @RequiredArgsConstructor
-public class ProductRepositoryAdapter implements ProductRepository {
+public class ProductRepositoryAdapter implements ProductRepositoryPort {
 
+    private final PriceMapper priceMapper;
     private final JdbcProductRepository jdbcProductRepository;
     private final ProductPersistenceMapper productPersistenceMapper;
-    private final PriceMapper priceMapper;
 
     private static final Logger log = LoggerFactory.getLogger(ProductRepositoryAdapter.class);
 
@@ -39,12 +39,12 @@ public class ProductRepositoryAdapter implements ProductRepository {
     @CacheEvict(value = "products", allEntries = true)
     public Product save(Product product) {
         try {
-            ProductEntity entity = productPersistenceMapper.fromDomain(product);
+            ProductEntity entity = productPersistenceMapper.toProductEntity(product);
 
             List<PriceEntity> prices = Optional.ofNullable(product.getPrices())
                     .orElse(Collections.emptyList())
                     .stream()
-                    .map(p -> priceMapper.fromDomain(p, entity))
+                    .map(p -> priceMapper.toPriceEntity(p, entity))
                     .toList();
 
             entity.setPrices(prices);
@@ -54,7 +54,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
             log.info("Product saved: id={}, name={}, prices={}",
                     saved.getId(), saved.getName(), saved.getPrices().size());
 
-            return productPersistenceMapper.toDomain(saved);
+            return productPersistenceMapper.toProduct(saved);
 
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateProductNameException(product.getName());
@@ -71,7 +71,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
     @Cacheable(value = "products", key = "#id")
     public Optional<Product> findById(Long id) {
         log.debug("Searching for product by ID: {}", id);
-        return jdbcProductRepository.findById(id).map(productPersistenceMapper::toDomain);
+        return jdbcProductRepository.findById(id).map(productPersistenceMapper::toProduct);
     }
 
     /**
@@ -84,7 +84,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
     @Cacheable(value = "productsByName", key = "#name")
     public Optional<Product> findByName(String name) {
         log.debug("Searching product by name: '{}'", name);
-        return jdbcProductRepository.findByName(name).map(productPersistenceMapper::toDomain);
+        return jdbcProductRepository.findByName(name).map(productPersistenceMapper::toProduct);
     }
 
     /**
@@ -96,7 +96,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
     public List<Product> findAll() {
         log.debug("Obtaining all the products");
         return jdbcProductRepository.findAll().stream()
-                .map(productPersistenceMapper::toDomain)
+                .map(productPersistenceMapper::toProduct)
                 .toList();
     }
 

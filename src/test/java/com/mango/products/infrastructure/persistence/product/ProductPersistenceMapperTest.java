@@ -16,10 +16,10 @@ class ProductPersistenceMapperTest {
     private static final String DESCRIPTION = "Descripción";
 
     @Test
-    void shouldMapEntityToDomain() {
+    void shouldMapEntityToProduct() {
         ProductEntity entity = new ProductEntity(1L, NAME, DESCRIPTION);
 
-        Product result = mapper.toDomain(entity);
+        Product result = mapper.toProduct(entity);
 
         assertNotNull(result);
         assertEquals(NAME, result.getName());
@@ -28,14 +28,14 @@ class ProductPersistenceMapperTest {
 
     @Test
     void shouldReturnNullWhenEntityIsNull() {
-        assertNull(mapper.toDomain(null));
+        assertNull(mapper.toProduct(null));
     }
 
     @Test
     void shouldMapDomainToEntity() {
         Product product = new Product(NAME, DESCRIPTION);
 
-        ProductEntity result = mapper.fromDomain(product);
+        ProductEntity result = mapper.toProductEntity(product);
 
         assertNotNull(result);
         assertEquals(NAME, result.getName());
@@ -44,14 +44,14 @@ class ProductPersistenceMapperTest {
 
     @Test
     void shouldReturnNullWhenProductIsNull() {
-        assertNull(mapper.fromDomain(null));
+        assertNull(mapper.toProductEntity(null));
     }
 
     @Test
     void shouldPreserveProductData() {
         Product product = new Product(1L, NAME, DESCRIPTION);
 
-        ProductEntity entity = mapper.fromDomain(product);
+        ProductEntity entity = mapper.toProductEntity(product);
 
         assertNotNull(entity);
         assertEquals(NAME, entity.getName());

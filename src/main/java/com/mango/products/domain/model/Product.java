@@ -12,11 +12,6 @@ import java.util.Optional;
 
 /**
  * Domain entity representing a Product.
- * <p>
- * This entity encapsulates business logic for product management including:
- * - Product validation (name, description constraints)
- * - Price management with overlap detection
- * - Price history queries
  */
 public class Product {
     private final Long id;

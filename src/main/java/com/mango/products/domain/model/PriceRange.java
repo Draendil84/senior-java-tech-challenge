@@ -6,12 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Value object that represents a time range for a price.
- * <p>
- * Encapsulates all the logic related to:
- * - Validating temporal constraints
- * - Comparing and detecting overlaps
- * - Temporal queries (duration, containment)
- * - Date arithmetic
  */
 public class PriceRange {
     private final LocalDate initDate;

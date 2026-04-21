@@ -6,14 +6,12 @@ import com.mango.products.infrastructure.web.product.contracts.CurrentPriceRespo
 import com.mango.products.infrastructure.web.product.contracts.PriceResponse;
 import com.mango.products.infrastructure.web.product.contracts.ProductResponse;
 import com.mango.products.infrastructure.web.product.contracts.ProductWithPricesResponse;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Converter from domain entities to DTOs (Presentation Layer).
  */
-@Component
 public class ProductContractMapper {
 
     private ProductContractMapper() {

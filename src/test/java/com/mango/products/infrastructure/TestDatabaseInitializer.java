@@ -1,6 +1,7 @@
 package com.mango.products.infrastructure;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestExecutionListener;
 
@@ -10,12 +11,12 @@ import org.springframework.test.context.TestExecutionListener;
 public class TestDatabaseInitializer implements TestExecutionListener {
 
     @Override
-    public void beforeTestClass(TestContext testContext) {
+    public void beforeTestClass(@NonNull TestContext testContext) {
         initializeSchema(testContext);
     }
 
     @Override
-    public void beforeTestMethod(TestContext testContext) {
+    public void beforeTestMethod(@NonNull TestContext testContext) {
         cleanAndReinitializeSchema(testContext);
     }
 

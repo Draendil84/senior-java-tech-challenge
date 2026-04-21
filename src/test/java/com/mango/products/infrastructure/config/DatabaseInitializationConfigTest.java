@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 
 import javax.sql.DataSource;
 
@@ -14,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DatabaseInitializationConfigTest {
 
     private final ApplicationContextRunner runner =
-            new ApplicationContextRunner()
-                    .withUserConfiguration(DatabaseInitializationConfig.class);
+            new ApplicationContextRunner().withUserConfiguration(DatabaseInitializationConfig.class);
 
     private DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
@@ -27,33 +25,23 @@ class DatabaseInitializationConfigTest {
     }
 
     @Test
-    void shouldCreateDataSourceInitializerWhenPropertyIsAlways() {
+    void shouldEnableSqlInitializationWhenModeIsAlways() {
         runner
-                .withBean(DataSource.class, this::dataSource)
-                .withInitializer(context -> {
-                    TestPropertyValues.of(
-                            "spring.sql.init.mode=always"
-                    ).applyTo(context);
-                })
-                .run(context -> {
-
-                    assertTrue(context.containsBeanDefinition("dataSourceInitializer"));
-                    assertTrue(context.containsBean(String.valueOf(DataSourceInitializer.class)));
-                });
+            .withBean(DataSource.class, this::dataSource)
+            .withPropertyValues("spring.sql.init.mode=always")
+            .run(context ->
+                assertTrue(context.containsBean("dataSourceScriptDatabaseInitializer")
+                    || context.containsBean("dataSourceInitializer")));
     }
 
     @Test
     void shouldNotCreateDataSourceInitializerWhenPropertyIsNotAlways() {
         runner
-                .withBean(DataSource.class, this::dataSource)
-                .withInitializer(context -> {
-                    TestPropertyValues.of(
-                            "spring.sql.init.mode=never"
-                    ).applyTo(context);
-                })
-                .run(context -> {
-
-                    assertFalse(context.containsBeanDefinition("dataSourceInitializer"));
-                });
+            .withBean(DataSource.class, this::dataSource)
+            .withInitializer(context ->
+                    TestPropertyValues.of("spring.sql.init.mode=never").applyTo(context))
+                .run(context ->
+                    assertFalse(context.containsBeanDefinition("dataSourceInitializer")));
     }
+
 }

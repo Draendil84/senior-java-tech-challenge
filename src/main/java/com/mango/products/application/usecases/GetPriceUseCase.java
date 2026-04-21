@@ -2,7 +2,7 @@ package com.mango.products.application.usecases;
 
 import com.mango.products.domain.model.Price;
 import com.mango.products.domain.model.Product;
-import com.mango.products.domain.ports.ProductRepository;
+import com.mango.products.domain.ports.ProductRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GetPriceUseCase {
 
-    private final ProductRepository productRepository;
+    private final ProductRepositoryPort productRepositoryPort;
 
     private static final Logger log = LoggerFactory.getLogger(GetPriceUseCase.class);
 
@@ -49,7 +49,7 @@ public class GetPriceUseCase {
      * @return PriceInfo with current price or empty if not found
      */
     private PriceInfo getCurrentPriceInfo(Long productId, LocalDate date) {
-        Optional<Price> price = productRepository.findById(productId)
+        Optional<Price> price = productRepositoryPort.findById(productId)
                 .flatMap(product -> product.getPriceAtDate(date));
 
         return new PriceInfo(price, Optional.empty());
@@ -62,7 +62,7 @@ public class GetPriceUseCase {
      * @return PriceInfo with product and its price history or empty if not found
      */
     private PriceInfo getPriceHistoryInfo(Long productId) {
-        Optional<Product> product = productRepository.findById(productId);
+        Optional<Product> product = productRepositoryPort.findById(productId);
         return new PriceInfo(Optional.empty(), product);
     }
 
